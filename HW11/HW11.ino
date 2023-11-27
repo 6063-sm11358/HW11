@@ -5,6 +5,8 @@ int stepCount;
 int correctSequence;
 int correct_flag;
 
+int potVal;
+
 void setup()
 {
   pinMode(2,INPUT);
@@ -28,16 +30,23 @@ void loop()
 {
   int currState_B1 = digitalRead(2);
   int currState_B2 = digitalRead(3);
-  int potVal = analogRead(A0);
 
   if(stepCount==0)
   {
-    if(currState_B1==1 && prevState_B1==0) //step 1
+    delay(8000);
+    potVal = analogRead(A0);
+    
+    if(potVal==4095) //step 1
     {
       stepCount++;
       correct_flag = 1;
     }
-    else if(currState_B2==1 && prevState_B2==0)
+    else if(potVal<=4090)
+    {
+      stepCount++;
+      correct_flag = 0;
+    }
+    else if((currState_B1==1 && prevState_B1==0) || (currState_B2==1 && prevState_B2==0))
     {
       stepCount++;
       correct_flag = 0;
@@ -45,7 +54,7 @@ void loop()
   }
   else if(stepCount==1)
   {
-    if(currState_B2==1 && prevState_B2==0) //step 2
+    if(currState_B1==1 && prevState_B1==0) //step 2
     {
       stepCount++;
       if(correct_flag==1) //checking whether sequence is correct till now
@@ -53,9 +62,8 @@ void loop()
         correct_flag = 1;
       }
     }
-    else if(currState_B1==1 && prevState_B1==0)
+    else if(currState_B2==1 && prevState_B2==0)
     {
-      //increase step but reset the sequence
       stepCount++;
       correct_flag = 0;
     }
@@ -79,7 +87,24 @@ void loop()
   }
   else if(stepCount==3)
   {
-    if(currState_B1==1 && prevState_B1==0) //step 4
+    if((currState_B2==1 && prevState_B2==0)) //step 4
+    {
+      stepCount++;
+      if(correct_flag==1) //checking whether sequence is correct till now
+      {
+        correct_flag = 1;
+      }
+    }
+    else if(currState_B1==1 && prevState_B1==0)
+    {
+      //increase step but reset the sequence
+      stepCount++;
+      correct_flag = 0;
+    }
+  }
+  else if(stepCount==4)
+  {
+    if((currState_B1==1 && prevState_B1==0)) //step 5
     {
       stepCount++;
       if(correct_flag==1) //checking whether sequence is correct till now
@@ -99,7 +124,7 @@ void loop()
   prevState_B2 = currState_B2;
 
   //lighting up LED based on sequence status
-  if(stepCount==4)
+  if(stepCount==5)
   {
     if(correct_flag==1)
     {
@@ -113,10 +138,7 @@ void loop()
     }
   }
 
-  Serial.print(currState_B1);
-  Serial.println(prevState_B1);
-  Serial.print(currState_B2);
-  Serial.println(prevState_B2);
+  Serial.println(potVal);  
   Serial.println(stepCount);
   Serial.println(correct_flag);
 

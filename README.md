@@ -6,7 +6,7 @@ My finite state password machine consists of 3 elements: 2 *switches* and 1 *pot
 **Step 2:** Press *Button 1*  
 **Step 3:** Press *Button 2*  
 **Step 4:** Press *Button 2* again  
-**Step 5:** Press **Button 1*  
+**Step 5:** Press *Button 1*  
 
 If the above sequence is entered correctly, a green LED lights up visualizing that the password entered is correct, else a red LED turns on.
 
